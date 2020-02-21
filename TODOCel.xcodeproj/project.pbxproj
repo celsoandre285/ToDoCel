@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47A1BFDF2400390100F3676E /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A1BFDE2400390100F3676E /* UIKitExtension.swift */; };
 		47D9B8E52400144A00797B00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9B8E42400144A00797B00 /* AppDelegate.swift */; };
 		47D9B8E72400144A00797B00 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9B8E62400144A00797B00 /* SceneDelegate.swift */; };
 		47D9B8E92400144A00797B00 /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D9B8E82400144A00797B00 /* TodoListViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		47A1BFDE2400390100F3676E /* UIKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
 		47D9B8E12400144A00797B00 /* TODOCel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TODOCel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47D9B8E42400144A00797B00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47D9B8E62400144A00797B00 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +39,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		47A1BFDD240038DF00F3676E /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				47A1BFDE2400390100F3676E /* UIKitExtension.swift */,
+			);
+			name = extensions;
+			sourceTree = "<group>";
+		};
 		47D9B8D82400144A00797B00 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +66,7 @@
 		47D9B8E32400144A00797B00 /* TODOCel */ = {
 			isa = PBXGroup;
 			children = (
+				47A1BFDD240038DF00F3676E /* extensions */,
 				47D9B8E42400144A00797B00 /* AppDelegate.swift */,
 				47D9B8E62400144A00797B00 /* SceneDelegate.swift */,
 				47D9B8E82400144A00797B00 /* TodoListViewController.swift */,
@@ -140,6 +151,7 @@
 			files = (
 				47D9B8E92400144A00797B00 /* TodoListViewController.swift in Sources */,
 				47D9B8E52400144A00797B00 /* AppDelegate.swift in Sources */,
+				47A1BFDF2400390100F3676E /* UIKitExtension.swift in Sources */,
 				47D9B8E72400144A00797B00 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -31,6 +31,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="ToDoCel" id="rWL-7n-seh">
                         <barButtonItem key="backBarButtonItem" title=" " id="mth-eA-qS5"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="xNs-ng-8gU">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="4z0-Kb-GOc" id="22v-Zc-mpK"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4ZI-P9-ACs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
