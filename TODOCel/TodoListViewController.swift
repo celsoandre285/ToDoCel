@@ -11,10 +11,15 @@ import UIKit
 class TodoListViewController:  UITableViewController {
     
     var itemArray = ["Estudar mais", "Guardar mais dinheiro!", "Pagar as contas"]
+    let defaults = UserDefaults.standard
+    private let listTodoKey = "listTodoItems"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        if let itens = defaults.array(forKey: self.listTodoKey) as? [String] {
+            self.itemArray = itens
+        }
     }
     
     //MARK - TableView Datasource Methods
@@ -59,6 +64,9 @@ class TodoListViewController:  UITableViewController {
                 self.showToast(message: "nada foi digitado")
                 return }
             self.itemArray.append(text)
+            
+            self.defaults.set(self.itemArray, forKey: self.listTodoKey)
+            
             self.tableView.reloadData()
         }
         
