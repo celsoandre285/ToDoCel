@@ -7,34 +7,40 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController:  UITableViewController {
     
-    private let listTodoKey = "listTodoItems"
-    private let itemCellKey = "ToDoItemCell"
+    private let listTodoKey   = "listTodoItems"
+    private let itemCellKey   = "ToDoItemCell"
     private let itensPlistKey = "Items.plist"
+    private let dataBaseName  = "DataModel"
     
     var itens = [Item]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    var selectedCategory: Category? {
+        didSet {
+            loadItens()
+        }
+    }
+    
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.tableView.separatorStyle = .none
+        self.navitationBarSettings()
         
-        print("Data file Path \(dataFilePath)")
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
-//        itens.append( Item(title: "Celso") )
-//        itens.append( Item(title: "André") )
-       
-//        if let itens = defaults.array(forKey: self.listTodoKey) as? [String] {
-//            self.itemArray = itens
-//        }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        loadItens()
+    //MARK - navitationBar settings
+    func navitationBarSettings() {
+        let nav = self.navigationItem
+        nav.title = "ToDo List"
     }
+    
     
     //MARK - TableView Datasource Methods
     
@@ -60,7 +66,7 @@ class TodoListViewController:  UITableViewController {
         
         itens[indexPath.row].done = !itens[indexPath.row].done
         
-        saveItens()
+        saveContext()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -79,11 +85,15 @@ class TodoListViewController:  UITableViewController {
                 self.showToast(message: "nada foi digitado")
                 return }
             
-            let newItem = Item(title: text)
+            
+            let newItem = Item(context: self.persistentContainer.viewContext)
+            newItem.title = text
+            newItem.done = false
+            newItem.parentCategory = self.selectedCategory
             
             self.itens.append(newItem)
             
-            self.saveItens()
+            self.saveContext()
         }
         
         alert.addTextField { (alertTextField) in
@@ -99,32 +109,88 @@ class TodoListViewController:  UITableViewController {
         
     }
     
-    func saveItens(){
-        let encoder = PropertyListEncoder()
+    // MARK: - Core Data Stack
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: self.dataBaseName)
         
+        container.loadPersistentStores { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+        
+        return container
+    }()
+    
+    // MARK: - Core Data Manipulation
+    func saveContext(){
+       
         do {
-            let data = try encoder.encode(self.itens)
-            try data.write(to: self.dataFilePath!)
-            
+            try persistentContainer.viewContext.save()
+        
         } catch {
-            print("error encoding item array, \(error.localizedDescription)")
+            let nsError = error
+            print("Unresolved error \(nsError.localizedDescription) ")
         }
         
         self.tableView.reloadData()
     }
     
-    func loadItens() {
+    func loadItens(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
         
-        if let data = try? Data(contentsOf: self.dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itens = try decoder.decode([Item].self, from: data )
-            }catch {
-                print(error.localizedDescription)
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        if let predicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, categoryPredicate])
+        } else {
+            
+        }
+
+        request.predicate = categoryPredicate
+        
+        do {
+            itens = try persistentContainer.viewContext.fetch(request)
+            tableView.reloadData()
+        } catch {
+            print("Error fetching data from \(error)")
+        }
+    }
+}
+
+extension TodoListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        guard let searchText = searchBar.text, !searchText.isEmpty else {
+            loadItens()
+            return
+        }
+        
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        
+        
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+        
+        //request.predicate = predicate
+        
+        let sortDescripter = NSSortDescriptor(key: "title", ascending: true)
+        
+        request.sortDescriptors = [sortDescripter]
+        
+        loadItens(with: request, predicate: predicate)
+        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let test = searchBar.text, test.isEmpty {
+            loadItens()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
             }
             
         }
-        
     }
 }
+
+extension TodoListViewController: UIPickerViewDelegate, UIImagePickerControllerDelegate {}
 
